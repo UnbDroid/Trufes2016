@@ -10,7 +10,10 @@
 #define LDR_4 A7
 #define ESQUERDA -1
 #define DIREITA 1
-
+#define KPROP 1
+#define KINTEG 1
+#define KDERIV 1
+#define KAMORT 1
 
 void iniciaSensorLDR(int analogpin)
 {
@@ -74,21 +77,27 @@ void desvia(byte lado)
 
 void tocaobarco()
 {
-	int tempo = 0, tempo_ant = 0;
-	int p, d;
+	int tempo = 0, tempo_ant = 0, dtempo;
+	int p, i = 0, d, pidfrente;
 	int erro = 0, erro_ant;
 	
 	while(SensorUS(FRENTE) > DIST_OBSTACULO)
 	{		
 		erro_ant = erro;
-		erro = SensorUS(TRAS) - DIST_FUNDO;
+		erro = DIST_FUNDO - SensorUS(TRAS);
 		tempo_ant = tempo;
 		tempo = millis();
+		dtempo = tempo - tempo_ant;
 		
-		p = -erro * KPROP;
-		d = (erro_ant - erro) * KDERIV / (tempo - tempo_ant);
+		p = erro;
+		i = KAMORT*i + erro*dtempo;
+		d = (erro - erro_ant)/dtempo;
+		pidfrente = KPROP*p + KINTEG*i + KDERIV*d;
 		
-		// completar
+		//funções que passam pros motores potência BASE+pidfrente
+		
+		//falta fazer o controle pra manter o robô na linha e uma garantia de que ele não vai sair da faixa que ele tá (usando os LDRs)
+		
 	}
 }
 
