@@ -1,21 +1,40 @@
 #define TRIGGER 5
 #define TRIG_DELAY 100
-#define	FRENTE 4
-#define TRAS 7
+#define	USFRENTE 4
+#define USTRAS 7
 #define LADO_1 
 #define LADO_2 
 #define LDR_1 A4
 #define LDR_2 A5
 #define LDR_3 A6
 #define LDR_4 A7
+#define MOTOR_DESVIOA
+#define MOTOR_DESVIOB
+#define MOTOR_ESQ
+#define MOTOR_DIR
+
 #define ESQUERDA -1
 #define DIREITA 1
-#define KPROP 1
-#define KINTEG 1
-#define KDERIV 1
-#define KAMORT 1
 
-void iniciaSensorLDR(int analogpin)
+#define KFPROP 1
+#define KFINTEG 1
+#define KFDERIV 1
+#define KFAMORT 1
+#define POTBASE 127
+
+
+#define KAPROP1
+#define KAINTEG1
+#define KADERIV1
+#define KAPROP2
+#define KAINTEG2
+#define KADERIV2
+#define KAPROP3
+#define KAINTEG3
+#define KADERIV3
+#define KAAMORT
+
+void iniciaSensorLDR(byte analogpin)
 {
 	pinMode(analogpin, INPUT);
 }
@@ -24,6 +43,14 @@ void iniciaSensorUS(byte echo)
 {
 	pinMode(TRIGGER, OUTPUT);
 	pinMode(echo, INPUT);
+}
+
+void iniciaMotores()
+{
+	pinMode(MOTOR_DESVIOA, OUTPUT);
+	pinMode(MOTOR_DESVIOB, OUTPUT);
+	pinMode(MOTOR_ESQ, OUTPUT);
+	pinMode(MOTOR_DIR, OUTPUT);
 }
 
 int SensorLDR(byte qualsensor) // passar LDR_N sendo N = 1, 2, 3 ou 4
@@ -75,41 +102,83 @@ void desvia(byte lado)
 	}
 }
 
-void tocaobarco()
+void tocaobarco(int faixa)
 {
 	int tempo = 0, tempo_ant = 0, dtempo;
-	int p, i = 0, d, pidfrente;
-	int erro = 0, erro_ant;
+	int pfrente, ifrente = 0, dfrente, pidfrente;
+	int palinha, ialinha = 0, dalinha, pidalinha;
+	int errofrente = DIST_FUNDO - SensorUS(TRAS), errofrente_ant;
+	int erroalinha = SensorUS(LADO_1) - SensorUS(LADO_2), erroalinha_ant;
+	int potesq, potdir;	
 	
-	while(SensorUS(FRENTE) > DIST_OBSTACULO)
+	while(SensorUS(USFRENTE) > DIST_OBSTACULO)
 	{		
-		erro_ant = erro;
-		erro = DIST_FUNDO - SensorUS(TRAS);
+		errofrente_ant = errofrente;
+		errofrente = DIST_FUNDO - SensorUS(USTRAS);
+		
+		erroalinha_ant = erroalinha;
+		erroalinha = SensorUS(LADO_1) - SensorUS(LADO_2);
+		
 		tempo_ant = tempo;
 		tempo = millis();
 		dtempo = tempo - tempo_ant;
 		
-		p = erro;
-		i = KAMORT*i + erro*dtempo;
-		d = (erro - erro_ant)/dtempo;
-		pidfrente = KPROP*p + KINTEG*i + KDERIV*d;
+		pfrente = errofrente;
+		ifrente = KFAMORT*ifrente + errofrente*dtempo;
+		dfrente = (errofrente - errofrente_ant)/dtempo;
+		pidfrente = KFPROP*pfrente + KFINTEG*ifrente + KFDERIV*dfrente;
 		
-		//funções que passam pros motores potência BASE+pidfrente
+		palinha = erroalinha;
+		ialinha = KAAMORT*ialinha + erroalinha*dtempo;
+		dalinha = (erroalinha - erroalinha_ant)/dtempo;
 		
-		//falta fazer o controle pra manter o robô na linha e uma garantia de que ele não vai sair da faixa que ele tá (usando os LDRs)
+		switch(faixa)
+		{
+		case 1:
+			pidalinha = KAPROP1*palinha + KAINTEG1*ialinha + KADERIV1*dalinha;
+			break;
+		case 2:
+			pidalinha = KAPROP2*palinha + KAINTEG2*ialinha + KADERIV2*dalinha;
+			break;
+		case 3:
+			pidalinha = KAPROP3*palinha + KAINTEG3*ialinha + KADERIV3*dalinha;
+			break;
+		}
 		
+		potdir = POTBASE+pidfrente+pidalinha;
+		potesq = POTBASE+pidfrente-pidalinha;
+		
+		if(potdir > 255) potdir = 255;
+		if(potesq > 255) potesq = 255;
+		if(potdir < 0) potdir = 0;
+		if(potesq < 0) potesq = 0;
+		
+		analogWrite(MOTOR_DIR, potdir);
+		analogWrite(MOTOR_ESQ, potesq);
+		
+		//falta garantir que ele não vai escapar da faixa (usar os LDRs)
 	}
+	
+	analogWrite(MOTOR_DIR, POTBASE+pidfrente); //passa pros motores a potência só pra ir pra frente antes de chamar a função de desvio
+	analogWrite(MOTOR_ESQ, POTBASE+pidfrente);
 }
 
 
 void setup()
 {
-	iniciaSensorUS();
-	iniciaSensorLDR();
+	iniciaSensorUS(USFRENTE);
+	iniciaSensorUS(USTRAS);
+	iniciaSensorUS(LADO_1);
+	iniciaSensorUS(LADO_2);
+	
+	iniciaSensorLDR(LDR_1);
+	iniciaSensorLDR(LDR_2);
+	
+	iniciaMotores();
 }
 
 void loop()
 {
-	int distancia = SensorUS(FRENTE); // lê a distância no ultrassom da frente
+	int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
 	int ldr_1 = SensorLDR(LDR_1); // lê a distância no LDR_1
 }
