@@ -1,38 +1,57 @@
+/*ULTRASSONS*/
+
 #define TRIGGER 5
 #define TRIG_DELAY 100
 #define	USFRENTE 4
 #define USTRAS 7
-#define LADO_1 
-#define LADO_2 
-#define LDR_1 A4
-#define LDR_2 A5
-#define LDR_3 A6
-#define LDR_4 A7
-#define MOTOR_DESVIOA
-#define MOTOR_DESVIOB
+#define LADO_FRENTE 
+#define LADO_TRAS 
+
+/*LDRs*/
+
+#define LDR_ESQ A4
+#define LDR_DIR A5
+
+/*MOTORES*/
+
+#define ENABLE 
+#define MOTOR_DESVIO_ESQ
+#define MOTOR_DESVIO_DIR
 #define MOTOR_ESQ
 #define MOTOR_DIR
 
+/*DESVIO*/
+
+#define TEMPO_PASSA_LINHA 
+#define POT_DESVIO
 #define ESQUERDA -1
 #define DIREITA 1
 
-#define KFPROP 1
-#define KFINTEG 1
-#define KFDERIV 1
-#define KFAMORT 1
+/*PID*/
+
 #define POTBASE 127
 
+	/*PID FRENTE*/
+	
+	#define KFPROP 1
+	#define KFINTEG 1
+	#define KFDERIV 1
+	#define KFAMORT 1
+	
+	/*PID ALINHA*/
+	
+	#define KAPROP1
+	#define KAINTEG1
+	#define KADERIV1
+	#define KAPROP2
+	#define KAINTEG2
+	#define KADERIV2
+	#define KAPROP3
+	#define KAINTEG3
+	#define KADERIV3
+	#define KAAMORT
 
-#define KAPROP1
-#define KAINTEG1
-#define KADERIV1
-#define KAPROP2
-#define KAINTEG2
-#define KADERIV2
-#define KAPROP3
-#define KAINTEG3
-#define KADERIV3
-#define KAAMORT
+/*FIM DO CABEÇALHO*/
 
 void iniciaSensorLDR(byte analogpin)
 {
@@ -47,18 +66,19 @@ void iniciaSensorUS(byte echo)
 
 void iniciaMotores()
 {
-	pinMode(MOTOR_DESVIOA, OUTPUT);
-	pinMode(MOTOR_DESVIOB, OUTPUT);
+	pinMode(ENABLE, OUTPUT);
+	pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
+	pinMode(MOTOR_DESVIO_DIR, OUTPUT);
 	pinMode(MOTOR_ESQ, OUTPUT);
 	pinMode(MOTOR_DIR, OUTPUT);
 }
 
-int SensorLDR(byte qualsensor) // passar LDR_N sendo N = 1, 2, 3 ou 4
+int SensorLDR(byte qualsensor) // passar LDR_ESQ ou LDR_DIR
 {
 	return analogRead(qualsensor);
 }
 
-int SensorUS(byte qualsensor) // passar FRENTE ou TRAS como parâmetro
+int SensorUS(byte qualsensor) // passar USFRENTE ou USTRAS como parâmetro
 {
 	digitalWrite(TRIGGER, LOW);
 	delayMicroseconds(2);
@@ -86,19 +106,24 @@ int tanalinha(byte qual_ldr)
 void desvia(byte lado)
 {
 	digitalWrite(ENABLE, HIGH);
+	digitalWrite(MOTOR_DESVIO_ESQ, LOW);
+	digitalWrite(MOTOR_DESVIO_DIR, LOW);
+	
 	if(lado == ESQUERDA)
 	{
-		analogWrite(DESVIA_ESQUERDA, POT_DESVIO);
-		while(!tanalinha(LDR_1));
+		analogWrite(MOTOR_DESVIO_ESQ, POT_DESVIO);
+		while(!tanalinha(LDR_ESQ));
 		delay(TEMPO_PASSA_LINHA);
-		while(!tanalinha(LDR_1));
-		digitalWrite(DESVIA_ESQUERDA, LOW);
+		while(!tanalinha(LDR_DIR));
+		delay(TEMPO_PASSA_LINHA);
+		digitalWrite(MOTOR_DESVIO_ESQ, LOW);
 	} else {
-		analogWrite(DESVIA_DIREITA, POT_DESVIO);
-		while(!tanalinha(LDR_2));
+		analogWrite(MOTOR_DESVIO_DIR, POT_DESVIO);
+		while(!tanalinha(LDR_DIR));
 		delay(TEMPO_PASSA_LINHA);
-		while(!tanalinha(LDR_2));
-		digitalWrite(DESVIA_DIREITA, LOW);
+		while(!tanalinha(LDR_ESQ));
+		delay(TEMPO_PASSA_LINHA);
+		digitalWrite(MOTOR_DESVIO_DIR, LOW);
 	}
 }
 
@@ -107,8 +132,8 @@ void tocaobarco(int faixa)
 	int tempo = 0, tempo_ant = 0, dtempo;
 	int pfrente, ifrente = 0, dfrente, pidfrente;
 	int palinha, ialinha = 0, dalinha, pidalinha;
-	int errofrente = DIST_FUNDO - SensorUS(TRAS), errofrente_ant;
-	int erroalinha = SensorUS(LADO_1) - SensorUS(LADO_2), erroalinha_ant;
+	int errofrente = DIST_FUNDO - SensorUS(USTRAS), errofrente_ant;
+	int erroalinha = SensorUS(LADO_FRENTE) - SensorUS(LADO_TRAS), erroalinha_ant;
 	int potesq, potdir;	
 	
 	while(SensorUS(USFRENTE) > DIST_OBSTACULO)
@@ -117,7 +142,7 @@ void tocaobarco(int faixa)
 		errofrente = DIST_FUNDO - SensorUS(USTRAS);
 		
 		erroalinha_ant = erroalinha;
-		erroalinha = SensorUS(LADO_1) - SensorUS(LADO_2);
+		erroalinha = SensorUS(LADO_FRENTE) - SensorUS(LADO_TRAS);
 		
 		tempo_ant = tempo;
 		tempo = millis();
@@ -148,10 +173,10 @@ void tocaobarco(int faixa)
 		potdir = POTBASE+pidfrente+pidalinha;
 		potesq = POTBASE+pidfrente-pidalinha;
 		
-		if(potdir > 255) potdir = 255;
-		if(potesq > 255) potesq = 255;
-		if(potdir < 0) potdir = 0;
-		if(potesq < 0) potesq = 0;
+		if(potdir > MAX_POWER) potdir = MAX_POWER;
+		if(potesq > MAX_POWER) potesq = MAX_POWER;
+		if(potdir < MIN_POWER) potdir = MIN_POWER;
+		if(potesq < MIN_POWER) potesq = MIN_POWER;
 		
 		analogWrite(MOTOR_DIR, potdir);
 		analogWrite(MOTOR_ESQ, potesq);
@@ -168,11 +193,11 @@ void setup()
 {
 	iniciaSensorUS(USFRENTE);
 	iniciaSensorUS(USTRAS);
-	iniciaSensorUS(LADO_1);
-	iniciaSensorUS(LADO_2);
+	iniciaSensorUS(LADO_FRENTE);
+	iniciaSensorUS(LADO_TRAS);
 	
-	iniciaSensorLDR(LDR_1);
-	iniciaSensorLDR(LDR_2);
+	iniciaSensorLDR(LDR_ESQ);
+	iniciaSensorLDR(LDR_DIR);
 	
 	iniciaMotores();
 }
@@ -180,5 +205,5 @@ void setup()
 void loop()
 {
 	int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
-	int ldr_1 = SensorLDR(LDR_1); // lê a distância no LDR_1
+	int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
 }
