@@ -181,11 +181,48 @@ void tocaobarco(int faixa)
 		analogWrite(MOTOR_DIR, potdir);
 		analogWrite(MOTOR_ESQ, potesq);
 		
-		//falta garantir que ele não vai escapar da faixa (usar os LDRs)
+		//não vai escapar da faixa (usar os LDRs)\/\/\/\/\/\/\/\/\/\/\/\/\/
+		
+		analogWrite(MOTOR_DESVIO_DIR, LOW);
+		analogWrite(MOTOR_DESVIO_ESQ, LOW);
+		
+		switch(faixa)
+		{
+			case 1:
+				if(!tanalinha(LDR_DIR))//achou linha direita
+					analogWrite(MOTOR_DESVIO_DIR, POTBASE);
+				break;
+			case 2:
+				if(!tanalinha(LDR_DIR))//achou linha direita
+					analogWrite(MOTOR_DESVIO_DIR, POTBASE);
+				if(!tanalinha(LDR_DIR))//achou linha esquerda
+					analogWrite(MOTOR_DESVIO_ESQ, POTBASE);
+				break;
+			case 3:
+				if(!tanalinha(LDR_DIR))//achou linha esquerda
+					analogWrite(MOTOR_DESVIO_ESQ, POTBASE);
+				break;
+		}
+		//Testar se essa parte do código não permite que o robô perca a linha /\/\/\/\/\/\/\/
 	}
-	
 	analogWrite(MOTOR_DIR, POTBASE+pidfrente); //passa pros motores a potência só pra ir pra frente antes de chamar a função de desvio
 	analogWrite(MOTOR_ESQ, POTBASE+pidfrente);
+
+	//FUNCAO DESVIA
+
+	switch(faixa)//tende a ficar na faixa 1(parede à esquerda)
+	{
+		case 1:
+			desvio(DIREITA);
+			break;
+		case 2:
+			desvio(ESQUERDA);
+			break;
+		case 3:
+			desvio(ESQUERDA);
+			break;
+	}
+	//END DESVIA
 }
 
 
