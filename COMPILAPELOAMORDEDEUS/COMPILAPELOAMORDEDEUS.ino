@@ -259,7 +259,10 @@ void loop()
 {
 //  int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
 //  int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
-  digitalWrite(MOTOR_DIR, HIGH);
- 
-  digitalWrite(MOTOR_ESQ, HIGH);
-  }
+  analogWrite(MOTOR_DIR, 100);
+  analogWrite(MOTOR_ESQ, 100);
+  delay(10000);
+  digitalWrite(MOTOR_DIR, LOW);
+  digitalWrite(MOTOR_ESQ, LOW);
+  while(HIGH);
+}
