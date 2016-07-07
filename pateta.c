@@ -182,7 +182,6 @@ void tocaobarco(int faixa)
 		analogWrite(MOTOR_ESQ, potesq);
 		
 		//não vai escapar da faixa (usar os LDRs)\/\/\/\/\/\/\/\/\/\/\/\/\/
-		
 		analogWrite(MOTOR_DESVIO_DIR, LOW);
 		analogWrite(MOTOR_DESVIO_ESQ, LOW);
 		
@@ -239,8 +238,28 @@ void setup()
 	iniciaMotores();
 }
 
+
+void fazOObvioEVaiEmbora()//So vai pra frente
+{
+	int t = 0;
+
+	analogWrite(MOTOR_DIR, POTBASE);
+	analogWrite(MOTOR_ESQ, POTBASE);
+	
+	while(t < 2000)
+	{
+		t = millis();
+	}
+	
+	analogWrite(MOTOR_DIR, LOW);
+	analogWrite(MOTOR_ESQ, LOW);
+	
+
+}
+
 void loop()
 {
 	int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
 	int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
+	fazOObvioEVaiEmbora();//so vai pra frente
 }
