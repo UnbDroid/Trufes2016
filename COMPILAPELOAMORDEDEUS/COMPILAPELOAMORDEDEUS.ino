@@ -17,8 +17,8 @@
 #define ENABLE 
 #define MOTOR_DESVIO_ESQ
 #define MOTOR_DESVIO_DIR
-#define MOTOR_ESQ D3
-#define MOTOR_DIR D7
+#define MOTOR_ESQ 7
+#define MOTOR_DIR 3
 
 /*DESVIO*/
 
@@ -66,14 +66,14 @@ void iniciaSensorUS(byte echo)
 
 void iniciaMotores()
 {
-  pinMode(ENABLE, OUTPUT);
-  pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
-  pinMode(MOTOR_DESVIO_DIR, OUTPUT);
+//  pinMode(ENABLE, OUTPUT);
+//  pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
+//  pinMode(MOTOR_DESVIO_DIR, OUTPUT);
   pinMode(MOTOR_ESQ, OUTPUT);
   pinMode(MOTOR_DIR, OUTPUT);
 }
 
-int SensorLDR(byte qualsensor) // passar LDR_ESQ ou LDR_DIR
+/*int SensorLDR(byte qualsensor) // passar LDR_ESQ ou LDR_DIR
 {
   return analogRead(qualsensor);
 }
@@ -126,7 +126,6 @@ void desvia(byte lado)
     digitalWrite(MOTOR_DESVIO_DIR, LOW);
   }
 }
-
 void tocaobarco(int faixa)
 {
   int tempo = 0, tempo_ant = 0, dtempo;
@@ -182,7 +181,6 @@ void tocaobarco(int faixa)
     analogWrite(MOTOR_ESQ, potesq);
     
     //não vai escapar da faixa (usar os LDRs)\/\/\/\/\/\/\/\/\/\/\/\/\/
-  /*  
     analogWrite(MOTOR_DESVIO_DIR, LOW);
     analogWrite(MOTOR_DESVIO_ESQ, LOW);
     
@@ -223,25 +221,45 @@ void tocaobarco(int faixa)
       break;
   }
   //END DESVIA
-*/
-}
 
+}
+*/
+void fazOObvioEVaiEmbora()//So vai pra frente
+{
+  unsigned long int t = 0;
+
+  analogWrite(MOTOR_DIR, 255);
+  analogWrite(MOTOR_ESQ, 255);
+  
+  while(t < 2000)
+  {
+    t = millis();
+  }
+  
+  analogWrite(MOTOR_DIR, LOW);
+  analogWrite(MOTOR_ESQ, LOW);
+  
+
+}
 
 void setup()
 {
-  iniciaSensorUS(USFRENTE);
+  /*iniciaSensorUS(USFRENTE);
   iniciaSensorUS(USTRAS);
   iniciaSensorUS(LADO_FRENTE);
   iniciaSensorUS(LADO_TRAS);
   
   iniciaSensorLDR(LDR_ESQ);
   iniciaSensorLDR(LDR_DIR);
-  
+  */
   iniciaMotores();
 }
 
 void loop()
 {
-  int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
-  int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
-}
+//  int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
+//  int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
+  digitalWrite(MOTOR_DIR, HIGH);
+ 
+  digitalWrite(MOTOR_ESQ, HIGH);
+  }
