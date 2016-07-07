@@ -208,7 +208,7 @@ void tocaobarco(int faixa)
 		if(potesq < MIN_POWER) potesq = MIN_POWER;
 
 		analogWrite(MOTOR_DIR, potdir);
-		analogWrite(MOTOR_ESQ, potes);
+		analogWrite(MOTOR_ESQ, potesq);
 
 		/*fim do pid*/
 
