@@ -2,7 +2,7 @@
 
 #define TRIGGER 5
 #define TRIG_DELAY 100
-#define  USFRENTE 4
+#define USFRENTE 4
 #define USTRAS 7
 #define LADO_FRENTE 
 #define LADO_TRAS 
@@ -15,65 +15,69 @@
 /*MOTORES*/
 
 #define ENABLE 
-#define MOTOR_DESVIO_ESQ
-#define MOTOR_DESVIO_DIR
-#define MOTOR_ESQ 7
+#define MOTOR_DESVIO_ESQ 
+#define MOTOR_DESVIO_DIR 
+#define MAX_POWER 255
+#define MIN_POWER 0
+
+#define MOTOR_ESQ 11
 #define MOTOR_DIR 3
 
 /*DESVIO*/
 
 #define TEMPO_PASSA_LINHA 
-#define POT_DESVIO
+#define POT_DESVIO 
 #define ESQUERDA -1
 #define DIREITA 1
 
 /*PID*/
 
 #define POTBASE 127
+#define TEMPO_PID 0
 
   /*PID FRENTE*/
   
-  #define KFPROP 1
-  #define KFINTEG 1
-  #define KFDERIV 1
-  #define KFAMORT 1
+  #define KFPROP 0  //constante da parte proporcional do PID
+  #define KFINTEG 0 //constante da parte integral do PID
+  #define KFDERIV 0 //constante da parte diferencial do PID
+  #define KFAMORT 1 //amortecimento da parte integral do PID
   
   /*PID ALINHA*/
   
-  #define KAPROP1
-  #define KAINTEG1
-  #define KADERIV1
-  #define KAPROP2
-  #define KAINTEG2
-  #define KADERIV2
-  #define KAPROP3
-  #define KAINTEG3
-  #define KADERIV3
-  #define KAAMORT
+  #define KAPROP1 0
+  #define KAINTEG1 0
+  #define KADERIV1 0
+  #define KAPROP2 0
+  #define KAINTEG2 0
+  #define KADERIV2 0
+  #define KAPROP3 0
+  #define KAINTEG3 0
+  #define KADERIV3 0
+  #define KAAMORT 1
 
 /*FIM DO CABEÇALHO*/
 
-void iniciaSensorLDR(byte analogpin)
+void iniciaSensorLDR(byte analogpin) // inicializa o LDR passando o pino de leitura dele
 {
   pinMode(analogpin, INPUT);
 }
 
-void iniciaSensorUS(byte echo)
+void iniciaSensorUS(byte echo) // inicializa o ultrassom passando o pino do echo
 {
   pinMode(TRIGGER, OUTPUT);
   pinMode(echo, INPUT);
 }
 
-void iniciaMotores()
+void iniciaMotores() // inicializa os pinos dos motores
 {
-//  pinMode(ENABLE, OUTPUT);
-//  pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
-//  pinMode(MOTOR_DESVIO_DIR, OUTPUT);
+  pinMode(ENABLE, OUTPUT);
+  pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
+  pinMode(MOTOR_DESVIO_DIR, OUTPUT);
   pinMode(MOTOR_ESQ, OUTPUT);
   pinMode(MOTOR_DIR, OUTPUT);
 }
 
-/*int SensorLDR(byte qualsensor) // passar LDR_ESQ ou LDR_DIR
+int SensorLDR(byte qualsensor) // lê o valor no LDR // passar LDR_ESQ ou LDR_DIR
 {
   return analogRead(qualsensor);
 }
@@ -93,7 +97,7 @@ int SensorUS(byte qualsensor) // passar USFRENTE ou USTRAS como parâmetro
   return distanceCentimeters; // retorna o valor encontrado
 }
 
-int tanalinha(byte qual_ldr)
+int tanalinha(byte qual_ldr) // retorna 1 se o LDR vê a linha e 0 caso contrário
 {
   if(SensorLDR(qual_ldr) < COR_LINHA)
   {
@@ -103,7 +107,7 @@ int tanalinha(byte qual_ldr)
   }
 }
 
-void desvia(byte lado)
+void mudafaixa(byte lado) // falta ajustar a função pra usar as novas funções desvia e stopdesvia
 {
   digitalWrite(ENABLE, HIGH);
   digitalWrite(MOTOR_DESVIO_ESQ, LOW);
@@ -126,6 +130,28 @@ void desvia(byte lado)
     digitalWrite(MOTOR_DESVIO_DIR, LOW);
   }
 }
+
+void desvia(byte lado) // liga o motor de desvio pra ESQUERDA ou DIREITA
+{
+  if(lado == ESQUERDA)
+  {
+    digitalWrite(ENABLE, HIGH);
+    digitalWrite(MOTOR_DESVIO_DIR, LOW);
+    analogWrite(MOTOR_DESVIO_ESQ, POT_DESVIO);
+  } else {
+    digitalWrite(ENABLE, HIGH);
+    digitalWrite(MOTOR_DESVIO_ESQ, LOW);
+    analogWrite(MOTOR_DESVIO_DIR, POT_DESVIO);
+  }
+}
+
+void stopdesvia() // desliga o motor de desvio
+{
+  digitalWrite(ENABLE, LOW);
+  digitalWrite(MOTOR_DESVIO_DIR, LOW);
+  digitalWrite(MOTOR_DESVIO_ESQ, LOW);
+}
+
 void tocaobarco(int faixa)
 {
   int tempo = 0, tempo_ant = 0, dtempo;
@@ -135,8 +161,12 @@ void tocaobarco(int faixa)
   int erroalinha = SensorUS(LADO_FRENTE) - SensorUS(LADO_TRAS), erroalinha_ant;
   int potesq, potdir; 
   
+  digitalWrite(ENABLE, LOW);
+  
   while(SensorUS(USFRENTE) > DIST_OBSTACULO)
   {   
+    /*trecho que calcula e passa pros motores o controle pid*/
+    
     errofrente_ant = errofrente;
     errofrente = DIST_FUNDO - SensorUS(USTRAS);
     
@@ -176,93 +206,73 @@ void tocaobarco(int faixa)
     if(potesq > MAX_POWER) potesq = MAX_POWER;
     if(potdir < MIN_POWER) potdir = MIN_POWER;
     if(potesq < MIN_POWER) potesq = MIN_POWER;
-    
+
     analogWrite(MOTOR_DIR, potdir);
     analogWrite(MOTOR_ESQ, potesq);
+
+    /*fim do pid*/
+
+
+    /*trecho que garante que o robô não vai escapar da faixa*/
     
-    //não vai escapar da faixa (usar os LDRs)\/\/\/\/\/\/\/\/\/\/\/\/\/
-    analogWrite(MOTOR_DESVIO_DIR, LOW);
-    analogWrite(MOTOR_DESVIO_ESQ, LOW);
+      //falta escrever a função para usar o ultrassom para garantir que o robô permaneça na faixa
     
     switch(faixa)
     {
       case 1:
-        if(!tanalinha(LDR_DIR))//achou linha direita
-          analogWrite(MOTOR_DESVIO_DIR, POTBASE);
+        if(tanalinha(LDR_DIR)) //achou linha direita
+        {
+          desvia(ESQUERDA);
+        } else {
+          stopdesvia();
+        }
         break;
       case 2:
-        if(!tanalinha(LDR_DIR))//achou linha direita
-          analogWrite(MOTOR_DESVIO_DIR, POTBASE);
-        if(!tanalinha(LDR_DIR))//achou linha esquerda
-          analogWrite(MOTOR_DESVIO_ESQ, POTBASE);
+        if(tanalinha(LDR_ESQ) || tanalinha(LDR_DIR))
+        {
+          if(tanalinha(LDR_DIR)) desvia(ESQUERDA);
+          if(tanalinha(LDR_ESQ)) desvia(DIREITA);
+        } else {
+          stopdesvia();
+        }
         break;
       case 3:
-        if(!tanalinha(LDR_DIR))//achou linha esquerda
-          analogWrite(MOTOR_DESVIO_ESQ, POTBASE);
+        if(tanalinha(LDR_ESQ)) //achou linha esquerda
+        {
+          desvia(DIREITA);
+        } else {
+          stopdesvia();
+        }
         break;
     }
-    //Testar se essa parte do código não permite que o robô perca a linha /\/\/\/\/\/\/\/
+    
+    delay(TEMPO_PID);
+    
+    /*fim do trecho p não escapar da faixa*/
   }
+
   analogWrite(MOTOR_DIR, POTBASE+pidfrente); //passa pros motores a potência só pra ir pra frente antes de chamar a função de desvio
   analogWrite(MOTOR_ESQ, POTBASE+pidfrente);
-
-  //FUNCAO DESVIA
-
-  switch(faixa)//tende a ficar na faixa 1(parede à esquerda)
-  {
-    case 1:
-      desvio(DIREITA);
-      break;
-    case 2:
-      desvio(ESQUERDA);
-      break;
-    case 3:
-      desvio(ESQUERDA);
-      break;
-  }
-  //END DESVIA
-
+  stopdesvia(); // desliga a ponte H
 }
-*/
-void fazOObvioEVaiEmbora()//So vai pra frente
-{
-  unsigned long int t = 0;
 
-  analogWrite(MOTOR_DIR, 255);
-  analogWrite(MOTOR_ESQ, 255);
-  
-  while(t < 2000)
-  {
-    t = millis();
-  }
-  
-  analogWrite(MOTOR_DIR, LOW);
-  analogWrite(MOTOR_ESQ, LOW);
-  
-
-}
 
 void setup()
 {
-  /*iniciaSensorUS(USFRENTE);
+  iniciaSensorUS(USFRENTE);
   iniciaSensorUS(USTRAS);
   iniciaSensorUS(LADO_FRENTE);
   iniciaSensorUS(LADO_TRAS);
-  
   iniciaSensorLDR(LDR_ESQ);
   iniciaSensorLDR(LDR_DIR);
-  */
   iniciaMotores();
 }
 
 void loop()
 {
-//  int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
-//  int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
-  analogWrite(MOTOR_DIR, 100);
-  analogWrite(MOTOR_ESQ, 100);
-  delay(10000);
-  digitalWrite(MOTOR_DIR, LOW);
-  digitalWrite(MOTOR_ESQ, LOW);
-  while(HIGH);
+  int distancia = SensorUS(USFRENTE); // lê a distância no ultrassom da frente
+  int ldr_esq = SensorLDR(LDR_ESQ); // lê a distância no LDR_ESQ
+
+
+
 }

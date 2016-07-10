@@ -20,8 +20,8 @@
 #define MAX_POWER 255
 #define MIN_POWER 0
 
-#define MOTOR_ESQ
-#define MOTOR_DIR
+#define MOTOR_ESQ 11
+#define MOTOR_DIR 3
 
 /*DESVIO*/
 
