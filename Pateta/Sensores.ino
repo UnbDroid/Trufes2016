@@ -71,6 +71,8 @@ unsigned long SensorUS(byte qualsensor)
 int get_us(byte qualsensor)
 {
   update_gyro();
+  digitalWrite(TRIGGER, LOW);
+  delayMicroseconds(4);
   digitalWrite(TRIGGER, HIGH); // ativa o sensor HC-SR04 com um pulso de 5 microssegundos no pino Trigger
   delayMicroseconds(10);
   digitalWrite(TRIGGER, LOW);
@@ -78,6 +80,7 @@ int get_us(byte qualsensor)
   unsigned long duration = pulseIn(qualsensor, HIGH, 10000); // calcula o tempo necessário para o retorno do pulso sonoro
   int distanceCentimeters = (duration * 17)>>10; // calcula a distância percorrida pelo pulso sonoro
 
+  update_gyro();
   update_gyro();
   update_gyro();
   update_gyro();
