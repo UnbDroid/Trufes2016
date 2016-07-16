@@ -26,10 +26,6 @@
 #define MIN_POWER 0
 #define MAX_POWER 240
 
-/*ULTRASSONS*/
-
-#define TRIG_DELAY 20
-
 /*LDRs*/
 
 #define COR_FITA 600
@@ -66,11 +62,11 @@ void setup()
 void loop()
 {
    unsigned long t_start = micros();
-   for(int i = 0; i < 64; ++i)
+   for(int i = 0; i < 128; ++i)
    {
     debug_sensores();
    }
-   Serial.println((micros() - t_start)>>6);
+   Serial.println((micros() - t_start)>>7);
    /*
    unsigned long t_start = millis();
    do{

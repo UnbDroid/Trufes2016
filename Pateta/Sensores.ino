@@ -68,14 +68,14 @@ unsigned long SensorUS(byte qualsensor)
   }
 }
 
-int get_us(byte qualsensor) // passar USFRENTE ou USTRAS como parâmetro
+int get_us(byte qualsensor)
 {
   update_gyro();
   digitalWrite(TRIGGER, HIGH); // ativa o sensor HC-SR04 com um pulso de 5 microssegundos no pino Trigger
   delayMicroseconds(10);
   digitalWrite(TRIGGER, LOW);
   
-  unsigned long duration = pulseIn(qualsensor, HIGH, 7000); // calcula o tempo necessário para o retorno do pulso sonoro
+  unsigned long duration = pulseIn(qualsensor, HIGH, 10000); // calcula o tempo necessário para o retorno do pulso sonoro
   int distanceCentimeters = (duration * 17)>>10; // calcula a distância percorrida pelo pulso sonoro
 
   update_gyro();
@@ -83,5 +83,6 @@ int get_us(byte qualsensor) // passar USFRENTE ou USTRAS como parâmetro
   update_gyro();
   update_gyro();
   update_gyro();
-  return duration; // retorna o valor encontrado
+  update_gyro();
+  return distanceCentimeters; // retorna o valor encontrado
 }
