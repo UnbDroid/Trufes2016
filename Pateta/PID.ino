@@ -13,10 +13,10 @@ void Setup_PID()
 {
   update_gyro();
   setpoint = get_gyro();
-  PID_ESQ.SetOutputLimits(80, 180);
-  PID_DIR.SetOutputLimits(80, 180);
-  PID_ESQ.SetSampleTime(80);
-  PID_DIR.SetSampleTime(80);
+  PID_ESQ.SetOutputLimits(MIN_POT_PID, MAX_POT_PID);
+  PID_DIR.SetOutputLimits(MIN_POT_PID, MAX_POT_PID);
+  PID_ESQ.SetSampleTime(90);
+  PID_DIR.SetSampleTime(90);
   PID_ESQ.SetMode(AUTOMATIC);
   PID_DIR.SetMode(AUTOMATIC);
 }

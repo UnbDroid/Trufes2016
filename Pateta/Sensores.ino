@@ -83,6 +83,5 @@ int get_us(byte qualsensor)
   update_gyro();
   update_gyro();
   update_gyro();
-  update_gyro();
   return distanceCentimeters; // retorna o valor encontrado
 }

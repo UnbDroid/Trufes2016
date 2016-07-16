@@ -33,13 +33,16 @@
 /*CONSTANTES*/
 
 #define FREIO 10
-#define N20 10
+#define N2O 10
 #define POT_DESVIO 127
 
 #define MIN_FUNDO 70
 #define MAX_FUNDO 100 
 #define COMP_ARENA 130
 #define COMP_ROBO 25
+
+#define MIN_POT_PID 90
+#define MAX_POT_PID 190
 
 #define DIST_FAIXA_0 5
 #define DIST_FAIXA_1 35
@@ -48,6 +51,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 void setup()
 {
+  digitalWrite(LED_BUILTIN, HIGH);
   Wire.begin();
   Serial.begin(9600);
   setupL3G4200D(2000); // Configura o L3G4200 para 200, 500 ou 2000 graus/seg
@@ -57,29 +61,10 @@ void setup()
   iniciaUS();
 
   Setup_PID();
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void loop()
 {
-   unsigned long t_start = micros();
-   for(int i = 0; i < 128; ++i)
-   {
     debug_sensores();
-   }
-   Serial.println((micros() - t_start)>>7);
-   /*
-   unsigned long t_start = millis();
-   do{
-     update_pid();
-     setmotoresq(potesq());
-     setmotordir(potdir());
-   } while(millis() - t_start < 2500);
-   for(int i = 80; i >= 0; --i)
-   {
-    setmotoresq(i);
-    setmotordir(i);
-    delay(15);
-   }
-   while(1);
-   */
 }

@@ -35,8 +35,8 @@ void pseudobang()
   int tras = SensorUS(USTRAS);
   if(tras <= MIN_FUNDO)   // se tá muito pra trás
   {
-    setmotoresq(potesq() + N20);
-    setmotordir(potdir() + N20);
+    setmotoresq(potesq() + N2O);
+    setmotordir(potdir() + N2O);
   } else {
     if(tras >= MAX_FUNDO) // se tá muito pra frente
     {
