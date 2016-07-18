@@ -20,9 +20,6 @@ void debug_sensores()
       digitalWrite(LED_BUILTIN, LOW);
      }
      
-     //if (get_gyro() != 0) {
-     // Serial.println(String(millis() - t_yaw)+" "+get_gyro()); 
-     //}
    }
    
    

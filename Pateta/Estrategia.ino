@@ -1,5 +1,5 @@
 #define coisa 0.06
-#define POW_MORE 2.1
+#define POW_MORE 1.9
 #define POW_LESS 0.2
 
 //boolean faixa = 1; // Variável usada para saber qual faixa o robô está: 0 = esquerda, 1 = central.
@@ -25,7 +25,7 @@ void verifica_obstaculo()
 {
   if(!desvio_incompleto)
   {
-    mantem_faixa (); //[[[[[[[[[[[[[[[[[[[[Descomentar isso]]]]]]]]]]]]]]]]]]]]]]]]]]]
+    mantem_faixa (); 
     desviar();
   } else {
     desviando();
