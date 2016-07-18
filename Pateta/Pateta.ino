@@ -16,6 +16,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define USDIR 8
 
 #define TRIGGER 5
+#define TRIG_DELAY 40
 
 #define LDR_ESQ A6
 #define LDR_DIR A7
@@ -35,7 +36,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 /*CONSTANTES*/
 
 #define FREIO 0.6
-#define N2O 1.25
+#define N2O 1.3
 #define POT_DESVIO 160
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
@@ -46,8 +47,8 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define COMP_ARENA 150
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 30
-#define MAX_POT_PID 105
+#define MIN_POT_PID 80
+#define MAX_POT_PID 165
 
 #define DIST_FAIXA_0 64
 #define DIST_FAIXA_1 34
@@ -75,4 +76,5 @@ void loop()
     debug_pid();
     //debug_desvio();
     //debug_sensores();
+    //debug_us(4);
 }

@@ -5,9 +5,10 @@ int filtro(int media, int leitura) {
   }
   
   int tmpdiff = leitura-media;
+
   if(abs(tmpdiff)>(media>>1))
   {
-     media = media - (media>>3) + (leitura>>3);
+     media = media - (media>>2) + (leitura>>2);
   } else {
      media = (media>>2) + leitura - (leitura>>2);
   }

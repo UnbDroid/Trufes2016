@@ -1,5 +1,5 @@
 int ldr_esq, ldr_dir;
-unsigned long usfrente, ustras, usesq, usdir;
+unsigned long usfrente = 17*50<<10, ustras = 17*80<<10, usesq = 17*30<<10, usdir = 17*30<<10;
 boolean ultrassom = 0;
 
 void update_sensors()
@@ -28,10 +28,6 @@ void iniciaUS() // inicializa o ultrassom passando o pino do echo
   pinMode(USTRAS, INPUT);
   pinMode(USESQ, INPUT);
   pinMode(USDIR, INPUT);
-  ustras = get_us(USTRAS);
-  usfrente = get_us(USFRENTE);
-  usesq = get_us(USESQ);
-  usdir = get_us(USDIR);
 }
 
 void update_ldr()
@@ -120,12 +116,12 @@ unsigned long SensorUSRaw(byte qualsensor)
 unsigned long get_us(byte qualsensor)
 {
   digitalWrite(TRIGGER, LOW);
-  delayMicroseconds(4);
+  //delayMicroseconds(4);
   digitalWrite(TRIGGER, HIGH); // ativa o sensor HC-SR04 com um pulso de 5 microssegundos no pino Trigger
   delayMicroseconds(5);
   digitalWrite(TRIGGER, LOW);
   
-  unsigned long duration = pulseIn(qualsensor, HIGH, 10000); // calcula o tempo necessário para o retorno do pulso sonoro
+  unsigned long duration = pulseIn(qualsensor, HIGH, 8000); // calcula o tempo necessário para o retorno do pulso sonoro
  /*
   if(duration = 0)
   {
@@ -143,18 +139,13 @@ unsigned long get_us(byte qualsensor)
   }
   */
   //int distanceCentimeters = (duration * 17)>>10; // calcula a distância percorrida pelo pulso sonoro
+  unsigned long t_start = millis();
   
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  update_gyro();
-  
+  while(millis() - t_start < TRIG_DELAY)
+  {
+    update_gyro();
+  } 
+   
   return duration; // retorna o valor encontrado
 }
 
