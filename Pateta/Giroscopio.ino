@@ -4,7 +4,8 @@
 #define CTRL_REG4 0x23
 #define CTRL_REG5 0x24
 
-#define DRIFT 4
+#define DRIFT 2
+#define T_DRIFT 6610
 
 //Endereco I2C do L3G4200D
 const int L3G4200D_Address = 105;
@@ -13,6 +14,7 @@ int y;
 int z;
 long int yaw = 0;
 unsigned long t_gyro = 0, t_gyro_ant;
+unsigned long t_drift;
 
 int get_gyro(){
   return yaw/14640000;
@@ -26,6 +28,17 @@ void update_gyro(){
   // Mostra os valores no serial monitor
   //yaw = filtro( yaw, yaw + z*(t_gyro - t_gyro_ant));
   yaw += z*(t_gyro - t_gyro_ant);
+  
+  if((millis() - t_drift) > T_DRIFT) {
+    update_drift();
+    t_drift = millis();
+  }
+  
+}
+
+void update_drift()
+{
+  yaw -= 14640000;
 }
 
 void getGyroValues()
@@ -64,6 +77,7 @@ int setupL3G4200D(int scale)
   // CTRL_REG5 controls high-pass filtering of outputs, use it
   // if you'd like:
   writeRegister(L3G4200D_Address, CTRL_REG5, 0b00000000);
+  t_drift = millis();
 }
 void writeRegister(int deviceAddress, byte address, byte val) 
 {

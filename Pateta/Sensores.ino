@@ -1,5 +1,13 @@
 int ldr_esq, ldr_dir;
 unsigned long usfrente, ustras, usesq, usdir;
+boolean ultrassom = 0;
+
+void update_sensors()
+{
+  update_ldr();
+  update_gyro();
+  update_us();
+}
 
 void iniciaLDR() // inicializa o LDR passando o pino de leitura dele
 {
@@ -28,19 +36,25 @@ void iniciaUS() // inicializa o ultrassom passando o pino do echo
 
 void update_ldr()
 {
-  ldr_esq = filtro(ldr_esq, analogRead(LDR_ESQ));
-  ldr_dir = filtro(ldr_dir, analogRead(LDR_DIR));
+  ldr_esq = analogRead(LDR_ESQ);
+  ldr_dir = analogRead(LDR_DIR);
 }
 
 void update_us()
 {
-  usfrente = filtro(usfrente, get_us(USFRENTE));
-  ustras = filtro(ustras, get_us(USTRAS));
-  usesq = filtro(usesq, get_us(USESQ));
-  usdir = filtro(usdir, get_us(USDIR));
+  if(ultrassom)
+  {
+    ustras = filtro(ustras, get_us(USTRAS));
+    ultrassom = !ultrassom;
+    usesq = filtro(usesq, get_us(USESQ));
+  } else {
+    usfrente = filtro(usfrente, get_us(USFRENTE));
+    ultrassom = !ultrassom;
+    usdir = filtro(usdir, get_us(USDIR));
+  }
 }
 
-boolean SensorLDR(byte qualsensor) // lê o valor no LDR // passar LDR_ESQ ou LDR_DIR
+boolean SensorLDR(byte qualsensor) // lê o valor booleano do LDR // passar LDR_ESQ ou LDR_DIR
 {
   switch(qualsensor)
   {
@@ -53,37 +67,94 @@ boolean SensorLDR(byte qualsensor) // lê o valor no LDR // passar LDR_ESQ ou LD
   return LOW;
 }
 
+int SensorLDRRaw(byte qualsensor) //
+{
+  switch(qualsensor)
+  {
+    case LDR_ESQ:
+      return ldr_esq;
+      break;
+    case LDR_DIR:
+      return ldr_dir;
+  }
+}
+
 unsigned long SensorUS(byte qualsensor)
 {
   switch(qualsensor)
   {
     case USTRAS:
-      return (int)(ustras>>10);
+      return (17*ustras)>>10;
+      //return ustras;
     case USFRENTE:
-      return (int)(usfrente>>10);
+      return (17*usfrente)>>10;
+      //return usfrente;
     case USESQ:
-      return (int)(usesq>>10);
+      return (17*usesq)>>10;
+      //return usesq;
     case USDIR:
-      return (int)(usdir>>10);
+      return (17*usdir)>>10;
+      //return usdir;
   }
 }
 
-unsigned long get_us(byte qualsensor) // passar USFRENTE ou USTRAS como parâmetro
+unsigned long SensorUSRaw(byte qualsensor)
 {
-  update_gyro();
+  switch(qualsensor)
+  {
+    case USTRAS:
+      return (17*get_us(USTRAS))>>10;
+      //return ustras;
+    case USFRENTE:
+      return (17*get_us(USFRENTE))>>10;
+      //return usfrente;
+    case USESQ:
+      return (17*get_us(USESQ))>>10;
+      //return usesq;
+    case USDIR:
+      return (17*get_us(USDIR))>>10;
+      //return usdir;
+  }
+}
+
+unsigned long get_us(byte qualsensor)
+{
   digitalWrite(TRIGGER, LOW);
-  delayMicroseconds(2);
+  delayMicroseconds(4);
   digitalWrite(TRIGGER, HIGH); // ativa o sensor HC-SR04 com um pulso de 5 microssegundos no pino Trigger
-  delayMicroseconds(10);
+  delayMicroseconds(5);
   digitalWrite(TRIGGER, LOW);
   
-  unsigned long duration = 17*pulseIn(qualsensor, HIGH, 7000); // calcula o tempo necessário para o retorno do pulso sonoro
-  //int distanceCentimeters = (duration * 17); // calcula a distância percorrida pelo pulso sonoro
-
+  unsigned long duration = pulseIn(qualsensor, HIGH, 8000); // calcula o tempo necessário para o retorno do pulso sonoro
+ /*
+  if(duration = 0)
+  {
+    switch(qualsensor)
+    {
+      case USTRAS:
+        return (ustras);
+      case USFRENTE:
+        return (usfrente);
+      case USESQ:
+        return (usesq);
+      case USDIR:
+        return (usdir);
+    }
+  }
+  */
+  //int distanceCentimeters = (duration * 17)>>10; // calcula a distância percorrida pelo pulso sonoro
+  
   update_gyro();
   update_gyro();
   update_gyro();
   update_gyro();
   update_gyro();
+  update_gyro();
+  update_gyro();
+  update_gyro();
+  update_gyro();
+  update_gyro();
+  
   return duration; // retorna o valor encontrado
 }
+
