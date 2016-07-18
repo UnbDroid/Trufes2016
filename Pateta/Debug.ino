@@ -54,16 +54,16 @@ void debug_time_pid()
 void debug_pid()
 {
   unsigned long t_start = millis();
-  setmotoresq(150);
-  setmotordir(150);
+  setmotoresq(100);
+  setmotordir(100);
   update_gyro();
-  delay (100);
+  delay (50);
   update_gyro();
   do{
      update_sensors();
      update_pid();
-     mantem_faixa ();
-     //verifica_obstaculo();
+     //mantem_faixa ();
+     verifica_obstaculo();
      pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   
@@ -98,36 +98,4 @@ void debug_desviar () {
   }
 }
 
-/*
-void debug_verifica_faixa()
-{
-  update_sensors ();
-  if(!desvio_incompleto)                // Só executa se o robô não está desviando
-  {
-    if(faixa)                           // Se está na faixa do meio.
-    {
-      if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) < DIST_FAIXA_1)            // Se está escapando pra a esquerda.
-      {
-        setmotordesvioesq(POT_FAIXA);
-        //setmotoresq(POT_COMPENSA);
-        //setmotordir(0);
-      } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) < DIST_FAIXA_1) {   // Se está escpanado pra a direita.
-        setmotordesviodir(POT_FAIXA);
-        //setmotoresq(0);
-        //setmotordir(POT_COMPENSA);
-      } else {
-        stopmotordesvio();
-      }
-    } else {                            // Se está na faixa da esquerda
-      if(SensorUS(USESQ) < DIST_FAIXA_0)
-      {
-        setmotordesvioesq(POT_FAIXA);
-      } else if(SensorLDR(LDR_DIR)) {
-        setmotordesviodir(POT_FAIXA);
-      } else {
-        stopmotordesvio();
-      }
-    }
-  }
-} 
-*/
+

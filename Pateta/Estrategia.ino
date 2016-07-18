@@ -10,43 +10,11 @@ void atualiza_tudo()
 
 void gogogo()
 {
-  atualiza_tudo();
-  pseudobang();
+  update_sensors();
+  update_pid();
   verifica_obstaculo();
-  //verifica_faixa();
+  pseudobang();
 }
-/*
-void verifica_faixa()
-{
-  if(!desvio_incompleto)                // Só executa se o robô não está desviando
-  {
-    if(faixa)                           // Se está na faixa do meio.
-    {
-      if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) < 31)            // Se está escapando pra a esquerda.
-      {
-        setmotordesvioesq(POT_FAIXA);
-        //setmotoresq(POT_COMPENSA);
-        //setmotordir(0);
-      } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) < 31) {   // Se está escpanado pra a direita.
-        setmotordesviodir(POT_FAIXA);
-        //setmotoresq(0);
-        //setmotordir(POT_COMPENSA);
-      } else {
-        stopmotordesvio();
-      }
-    } else {                            // Se está na faixa da esquerda
-      if(SensorUS(USESQ) < DIST_FAIXA_0)
-      {
-        setmotordesvioesq(POT_FAIXA);
-      } else if(SensorLDR(LDR_DIR)) {
-        setmotordesviodir(POT_FAIXA);
-      } else {
-        stopmotordesvio();
-      }
-    }
-  }
-}
-*/
 void verifica_obstaculo()
 {
   if(!desvio_incompleto)
@@ -61,13 +29,14 @@ void verifica_obstaculo()
 void desviar() {
   if ((SensorUS(USFRENTE)+SensorUS(USTRAS)) < COMP_ARENA - COMP_ROBO){ // Se a soma das distancia da frente e de trás não coincidirem com o tamanho da arena, ele desvia
     if (faixa == 1){                   // Se o robô está na faixa central
-      setmotordesviodir (POT_DESVIO);
+      //turn_left ();  
+      setmotordesvioesq (POT_DESVIO);
       faixa = 0;
     }
     else {                             // Se o robô está na faixa da esquerda
-      turn_right ();  
+      //turn_right ();  
       faixa = 1;
-      setmotordesvioesq (POT_DESVIO);
+      setmotordesviodir (POT_DESVIO);
     }
     desvio_incompleto = 1;             // "Avisa" que desvio foi necessario e está em progresso
   }
