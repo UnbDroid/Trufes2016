@@ -4,6 +4,29 @@ boolean faixa = 1; // Variável usada para saber qual faixa o robô está: 0 = e
 boolean corrige_esq = 0, corrige_dir = 0;
 
 
+void debug_mantem_faixa()
+{
+  corrige_dir = 0;
+  corrige_esq = 0;
+  if(faixa)
+  {
+    if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) <= DIST_FAIXA_1 || get_gyro() > 6)
+    {
+      corrige_dir = 1;
+    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= DIST_FAIXA_1 || get_gyro() < -6) {
+      corrige_esq = 1;
+    }
+  } else {
+    if(SensorUS(USESQ) <= DIST_FAIXA_0 || get_gyro() > 6)
+    {
+      corrige_dir = 1;
+    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= 55 || get_gyro() < -6) {
+      corrige_esq = 1;
+    }
+  }
+}
+
+
 void debug_sensores()
 {
    //unsigned long t_start = micros();
@@ -107,27 +130,6 @@ void debug_desvio()
 }
 */
 
-void debug_mantem_faixa()
-{
-  corrige_dir = 0;
-  corrige_esq = 0;
-  if(faixa)
-  {
-    if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) <= DIST_FAIXA_1)
-    {
-      corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= DIST_FAIXA_1) {
-      corrige_esq = 1;
-    }
-  } else {
-    if(SensorUS(USESQ) <= DIST_FAIXA_0)
-    {
-      corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= 55) {
-      corrige_esq = 1;
-    }
-  }
-}
 /*
 void debug_verifica_faixa()
 {

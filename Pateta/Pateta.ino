@@ -36,8 +36,8 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 /*CONSTANTES*/
 
-#define FREIO 0.75
-#define N2O 1.15
+#define FREIO 0.8
+#define N2O 1.2
 #define POT_DESVIO 240
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
@@ -51,8 +51,8 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define MIN_POT_PID 65
 #define MAX_POT_PID 120
 
-#define DIST_FAIXA_0 10
-#define DIST_FAIXA_1 34
+#define DIST_FAIXA_0 12
+#define DIST_FAIXA_1 42
 
 void setup()
 {
