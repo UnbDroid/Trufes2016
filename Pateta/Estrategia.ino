@@ -1,4 +1,6 @@
 #define coisa 0.06
+#define POW_MORE 2.1
+#define POW_LESS 0.2
 
 //boolean faixa = 1; // Variável usada para saber qual faixa o robô está: 0 = esquerda, 1 = central.
 //boolean corrige_esq = 0, corrige_dir = 0;
@@ -16,38 +18,7 @@ void gogogo()
   verifica_obstaculo();
 //  verifica_faixa();
 }
-/*
-void verifica_faixa()
-{
-  if(!desvio_incompleto)                // Só executa se o robô não está desviando
-  {
-    if(faixa)                           // Se está na faixa do meio.
-    {
-      if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) < 31)            // Se está escapando pra a esquerda.
-      {
-        setmotordesvioesq(POT_FAIXA);
-        //setmotoresq(POT_COMPENSA);
-        //setmotordir(0);
-      } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) < 31) {   // Se está escpanado pra a direita.
-        setmotordesviodir(POT_FAIXA);
-        //setmotoresq(0);
-        //setmotordir(POT_COMPENSA);
-      } else {
-        stopmotordesvio();
-      }
-    } else {                            // Se está na faixa da esquerda
-      if(SensorUS(USESQ) < DIST_FAIXA_0)
-      {
-        setmotordesvioesq(POT_FAIXA);
-      } else if(SensorLDR(LDR_DIR)) {
-        setmotordesviodir(POT_FAIXA);
-      } else {
-        stopmotordesvio();
-      }
-    }
-  }
-}
-*/
+
 
 
 void verifica_obstaculo()
@@ -76,6 +47,8 @@ void desviando() {
         
         setmotoresq(potdir()* 0.7);
         setmotordir(potesq()* 1.7);
+        solucaoporca ();
+        
     }
   }
   else {    // Se o robô está indo para a faixa central
@@ -86,8 +59,26 @@ void desviando() {
         
         setmotoresq(potdir()* 1.7);
         setmotordir(potesq()* 0.7);
+        solucaoporca ();
      }
   }
+}
+
+void solucaoporca () {
+  //Tentariva de solução porca ----------------        
+        unsigned long t_start = millis();
+        while(millis() - t_start < 100)
+        {
+          update_gyro();
+        }
+        setmotoresq(0);
+        setmotordir(0);
+        t_start = millis();
+        while(millis() - t_start < 500)
+        {
+          update_gyro();
+        }
+        //---------------------------------------------
 }
 
 void pseudobang()
@@ -97,13 +88,13 @@ void pseudobang()
   {
     //-------------------------------------------Desvio-----------------------------------------------------
     if (desvio_incompleto == 1 && faixa == 0){
-      setmotordir(potdir()* 1.7);
-      setmotoresq(potesq()* 0.3);
+      setmotordir(potdir()* POW_MORE);
+      setmotoresq(potesq()* POW_LESS);
       setmotordesvioesq (POT_DESVIO);
     }
     else if (desvio_incompleto == 1 && faixa == 1){
-      setmotoresq(potesq()* 1.7);
-      setmotordir(potdir()* 0.3);
+      setmotoresq(potesq()* POW_MORE);
+      setmotordir(potdir()* POW_LESS);
       setmotordesviodir (POT_DESVIO);
     } 
     //----------------------------------------------Correção na faixa---------------------------------------------
@@ -127,15 +118,15 @@ void pseudobang()
       {
       //-------------------------------------------Desvio----------------------------------------------------- 
        if (desvio_incompleto == 1 && faixa == 0){
-        setmotordir(potdir()*1.9);
-        setmotoresq(potesq());
+        setmotordir(potdir()* POW_MORE);
+        setmotoresq(potesq()* POW_LESS);
         setmotordesvioesq (POT_DESVIO);
       }
       else if (desvio_incompleto == 1 && faixa == 1){
-        setmotoresq(potesq()* 1.9);
-        setmotordir(potdir());
+        setmotoresq(potesq()* POW_MORE);
+        setmotordir(potdir()* POW_LESS);
         setmotordesviodir (POT_DESVIO);
-      }
+      } 
       //----------------------------------------------Correção na faixa----------------------------------------------
       if(corrige_esq)
       {
@@ -159,19 +150,17 @@ void pseudobang()
     
 //=============================================== se tá sussa ===================================================
      else {              // se tá sussa
-        //-------------------------------------------Desvio------------------------------------------------
-        if (desvio_incompleto == 1 && faixa == 0){
-        setmotordir(potdir()* 1.5);
-        setmotoresq(potesq()* 0.5);
-        
-      setmotordesvioesq (POT_DESVIO);
+      //-------------------------------------------Desvio------------------------------------------------
+      if (desvio_incompleto == 1 && faixa == 0){
+        setmotordir(potdir()* POW_MORE);
+        setmotoresq(potesq()* POW_LESS);
+        setmotordesvioesq (POT_DESVIO);
       }
       else if (desvio_incompleto == 1 && faixa == 1){
-        setmotoresq(potesq()* 1.5);
-        setmotordir(potdir()* 0.5);
-        
-      setmotordesviodir (POT_DESVIO);
-      }  
+        setmotoresq(potesq()* POW_MORE);
+        setmotordir(potdir()* POW_LESS);
+        setmotordesviodir (POT_DESVIO);
+      }   
      //----------------------------------------------Correção na faixa---------------------------------------------------
      else if(corrige_esq)
       {

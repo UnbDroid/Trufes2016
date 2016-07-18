@@ -28,7 +28,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 /*MOTORES*/
 
 #define MIN_POWER 30
-#define MAX_POWER 220
+#define MAX_POWER 160
 
 /*LDRs*/
 
@@ -38,18 +38,18 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 #define FREIO 0.75
 #define N2O 1.15
-#define POT_DESVIO 160
+#define POT_DESVIO 210
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
 
-#define MIN_FUNDO 65
+#define MIN_FUNDO 70
 #define MAX_FUNDO 80
 #define MAX_FRENTE 60
 #define COMP_ARENA 180
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 60
-#define MAX_POT_PID 160
+#define MIN_POT_PID 65
+#define MAX_POT_PID 120
 
 #define DIST_FAIXA_0 10
 #define DIST_FAIXA_1 34

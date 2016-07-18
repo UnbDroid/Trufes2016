@@ -75,7 +75,6 @@ void debug_pid()
      update_sensors();
      update_pid();
      verifica_obstaculo ();
-     //mantem_faixa();
      pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   
