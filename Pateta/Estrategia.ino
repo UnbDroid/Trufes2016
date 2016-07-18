@@ -1,6 +1,6 @@
-boolean faixa = 1; // Variável usada para saber qual faixa o robô está: 0 = esquerda, 1 = central.
-boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em processo de desvio: 0 = não está, 1 = está desviando.
-boolean corrige_esq = 0, corrige_dir = 0;
+//boolean faixa = 1; // Variável usada para saber qual faixa o robô está: 0 = esquerda, 1 = central.
+
+//boolean corrige_esq = 0, corrige_dir = 0;
 
 void atualiza_tudo()
 {
@@ -60,12 +60,10 @@ void verifica_obstaculo()
 void desviar() {
   if ((SensorUS(USFRENTE)+SensorUS(USTRAS)) < COMP_ARENA - COMP_ROBO){ // Se a soma das distancia da frente e de trás não coincidirem com o tamanho da arena, ele desvia
     if (faixa == 1){                   // Se o robô está na faixa central
-      setmotordesvioesq(POT_DESVIO);
       faixa = 0;
     }
     else {                             // Se o robô está na faixa da esquerda
       faixa = 1;
-      setmotordesviodir(POT_DESVIO);
     }
     desvio_incompleto = 1;             // "Avisa" que desvio foi necessario e está em progresso
   }
@@ -86,52 +84,53 @@ void desviando() {
   }
 }
 
+#define coisa 0.06
 void pseudobang()
 {
-  int tras = SensorUS(USTRAS);
-  int frente = SensorUS(USFRENTE);
-
-  if(tras >= MAX_FUNDO || frente < MAX_FRENTE)   // se tá muito pra frente
+  if(SensorUS (USTRAS) >= MAX_FUNDO)  // se tá muito pra frente
   {
     if(corrige_esq)
     {
-      setmotoresq(potesq() * FREIO);
-      setmotordir(potdir());
-    } else if(corrige_dir){
-      setmotordir(potdir() * FREIO);
-      setmotoresq(potesq());
-    } else {
-      setmotoresq(potesq() * FREIO);
-      setmotordir(potdir() * FREIO);
-    }
-  } else {
-    if(tras <= MIN_FUNDO) // se tá muito pra trás
+      setmotoresq(potesq() * FREIO * FREIO);
+      setmotordir(potdir()* (FREIO-coisa));} 
+    else if(corrige_dir){
+      setmotordir(potdir() * FREIO* FREIO);
+      setmotoresq(potesq()* (FREIO+coisa));} 
+    else {
+      setmotoresq(potesq() * FREIO* FREIO);
+      setmotordir(potdir() * FREIO* FREIO);}
+  } 
+  else if(SensorUS (USTRAS) <= MIN_FUNDO) // se tá muito pra trás
     {
       if(corrige_esq)
       {
         setmotoresq(potesq());
-        setmotordir(potdir() * N2O);
-      } else if(corrige_dir){
+        setmotordir(potdir() * (N2O-coisa));
+      } 
+      else if(corrige_dir){
         setmotordir(potdir());
-        setmotoresq(potesq() * N2O);
-      } else {
+        setmotoresq(potesq() * (N2O+coisa));
+      } 
+      else {
         setmotoresq(potesq() * N2O);
         setmotordir(potdir() * N2O);
       }
-    } else {              // se tá sussa
+    } 
+    else {              // se tá sussa
       if(corrige_esq)
       {
         setmotoresq(potesq());
         setmotordir(potdir() * N2O);
-      } else if(corrige_dir){
+      } 
+      else if(corrige_dir){
         setmotordir(potdir());
         setmotoresq(potesq() * N2O);
-      } else {
+      } 
+      else {
         setmotoresq(potesq());
         setmotordir(potdir());
       }
     }
-  }
 }
 
 void mantem_faixa()
@@ -140,17 +139,19 @@ void mantem_faixa()
   corrige_esq = 0;
   if(faixa)
   {
-    if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) <= DIST_FAIXA_1)
+    if((SensorUS(USESQ) < 34 && SensorUS(USDIR) > 35) || SensorLDR(LDR_ESQ))
     {
       corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR)) {
+    } 
+    else if((SensorUS(USDIR) < 34 && SensorUS(USESQ) > 35) || SensorLDR(LDR_DIR)) 
+    {
       corrige_esq = 1;
     }
   } else {
-    if(SensorUS(USESQ) <= DIST_FAIXA_0)
+    if(SensorUS(USESQ) <= 5)
     {
       corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR)) {
+    } else if(SensorUS(USESQ) >= 8 ) {
       corrige_esq = 1;
     }
   }

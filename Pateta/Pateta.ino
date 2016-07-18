@@ -1,4 +1,5 @@
 #include <Wire.h>
+boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em processo de desvio: 0 = não está, 1 = está desviando.
 
 /*TABELA DE PINOS*/
 
@@ -15,6 +16,7 @@
 #define USDIR 8
 
 #define TRIGGER 5
+#define TRIG_DELAY 40
 
 #define LDR_ESQ A6
 #define LDR_DIR A7
@@ -24,8 +26,8 @@
 
 /*MOTORES*/
 
-#define MIN_POWER 0
-#define MAX_POWER 240
+#define MIN_POWER 30
+#define MAX_POWER 220
 
 /*LDRs*/
 
@@ -33,22 +35,22 @@
 
 /*CONSTANTES*/
 
-#define FREIO 0.5
-#define N2O 1.25
+#define FREIO 0.6
+#define N2O 1.3
 #define POT_DESVIO 160
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
 
-#define MIN_FUNDO 60
-#define MAX_FUNDO 95
+#define MIN_FUNDO 70
+#define MAX_FUNDO 90
 #define MAX_FRENTE 60
-#define COMP_ARENA 190
+#define COMP_ARENA 150
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 70
-#define MAX_POT_PID 170
+#define MIN_POT_PID 80
+#define MAX_POT_PID 165
 
-#define DIST_FAIXA_0 5
+#define DIST_FAIXA_0 64
 #define DIST_FAIXA_1 34
 
 void setup()
@@ -62,7 +64,6 @@ void setup()
 
   iniciaLDR();
   iniciaUS();
- 
   
   Setup_PID();
   digitalWrite(LED_BUILTIN, LOW);
@@ -75,4 +76,5 @@ void loop()
     debug_pid();
     //debug_desvio();
     //debug_sensores();
+    //debug_us(4);
 }

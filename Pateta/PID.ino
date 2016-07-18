@@ -2,8 +2,8 @@
 
 double pot_esq = 0, pot_dir = 0;
 double gyro = 0;
-double Kep = 1, Kei = 0.1, Ked = 0.7;
-double Kdp = 1, Kdi = 0.1, Kdd = 0.7;
+double Kep = 1, Kei = 0, Ked = 0.5;
+double Kdp = 1, Kdi = 0, Kdd = 0.5;
 double setpoint = 0;
 
 PID PID_ESQ(&gyro, &pot_esq, &setpoint, Kep, Kei, Ked, REVERSE);
@@ -26,9 +26,7 @@ void update_pid()
   update_gyro();
   gyro = get_gyro();
   PID_ESQ.Compute();
-  update_gyro();
   PID_DIR.Compute();
-  update_gyro();
 }
 
 double potesq()
