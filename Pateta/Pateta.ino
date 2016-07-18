@@ -42,8 +42,8 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
 
-#define MIN_FUNDO 70
-#define MAX_FUNDO 90
+#define MIN_FUNDO 65
+#define MAX_FUNDO 80
 #define MAX_FRENTE 60
 #define COMP_ARENA 180
 #define COMP_ROBO 15
