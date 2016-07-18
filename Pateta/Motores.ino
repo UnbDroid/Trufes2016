@@ -1,6 +1,5 @@
 void iniciaMotores() // inicializa os pinos dos motores
 {
-  
   pinMode(ENABLE, OUTPUT);
   pinMode(MOTOR_DESVIO_ESQ, OUTPUT);
   pinMode(MOTOR_DESVIO_DIR, OUTPUT);
@@ -22,13 +21,13 @@ void setmotordir(int potencia)
   analogWrite(MOTOR_DIR, potencia);
 }
 
-void setmotordesvioesq(){
+void setmotordesvioesq(int potencia){
   digitalWrite (MOTOR_DESVIO_ESQ, LOW);
-  analogWrite (MOTOR_DESVIO_DIR, POT_DESVIO);
+  analogWrite (MOTOR_DESVIO_DIR, potencia);
 }
-void setmotordesviodir(){
+void setmotordesviodir(int potencia){
   digitalWrite (MOTOR_DESVIO_DIR, LOW);
-  analogWrite (MOTOR_DESVIO_ESQ, POT_DESVIO);
+  analogWrite (MOTOR_DESVIO_ESQ, potencia);
 }
 
 void stopmotordesvio(){
