@@ -121,7 +121,7 @@ unsigned long get_us(byte qualsensor)
   delayMicroseconds(5);
   digitalWrite(TRIGGER, LOW);
   
-  unsigned long duration = pulseIn(qualsensor, HIGH, 8000); // calcula o tempo necessário para o retorno do pulso sonoro
+  unsigned long duration = pulseIn(qualsensor, HIGH,11000); // calcula o tempo necessário para o retorno do pulso sonoro
  /*
   if(duration = 0)
   {

@@ -74,7 +74,8 @@ void debug_pid()
   do{
      update_sensors();
      update_pid();
-     mantem_faixa();
+     verifica_obstaculo ();
+     //mantem_faixa();
      pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   
@@ -84,7 +85,7 @@ void debug_pid()
   setmotordir(0);
   while(1);
 }
-
+/*
 void debug_desvio()
 {
   int esq = SensorUSRaw(USESQ);
@@ -108,7 +109,7 @@ void debug_desvio()
     setmotordir(0);
   }
 }
-
+*/
 
 void debug_mantem_faixa()
 {
