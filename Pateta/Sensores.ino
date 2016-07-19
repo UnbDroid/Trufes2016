@@ -1,5 +1,5 @@
 int ldr_esq, ldr_dir;
-unsigned long usfrente = 17*50<<10, ustras = 17*80<<10, usesq = 17*30<<10, usdir = 17*30<<10;
+unsigned long usfrente, ustras, usesq, usdir;
 boolean ultrassom = 0;
 
 void update_sensors()

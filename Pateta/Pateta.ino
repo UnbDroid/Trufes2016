@@ -27,7 +27,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 /*MOTORES*/
 
-#define MIN_POWER 30
+#define MIN_POWER 0
 #define MAX_POWER 160
 
 /*LDRs*/
@@ -38,7 +38,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 #define FREIO 0.8
 #define N2O 1.2
-#define POT_DESVIO 240
+#define POT_DESVIO 200
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
 
@@ -48,8 +48,8 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define COMP_ARENA 180
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 65
-#define MAX_POT_PID 120
+#define MIN_POT_PID 70
+#define MAX_POT_PID 150
 
 #define DIST_FAIXA_0 12
 #define DIST_FAIXA_1 42
@@ -62,11 +62,13 @@ void setup()
       
   setupL3G4200D(2000); // Configura o L3G4200 para 200, 500 ou 2000 graus/seg
   iniciaMotores();
-
+  
   iniciaLDR();
   iniciaUS();
   
   Setup_PID();
+  setmotoresq(150);
+  setmotordir(150);
   digitalWrite(LED_BUILTIN, LOW);
   
 }
@@ -74,8 +76,12 @@ void setup()
 void loop()
 {
     //debug_verifica_faixa ();
-    debug_pid();
+    //debug_pid ();
+    //debug_verifica_obstaculo ();
+
+    
+    update_sensors ();
+    verifica_obstaculo();
     //debug_desvio();
     //debug_sensores();
-    //debug_us(4);
 }

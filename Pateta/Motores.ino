@@ -21,6 +21,16 @@ void setmotordir(int potencia)
   analogWrite(MOTOR_DIR, potencia);
 }
 
+void offmotordir()
+{
+  digitalWrite(MOTOR_DIR, LOW);
+}
+
+void offmotoresq()
+{
+  digitalWrite(MOTOR_ESQ, LOW);
+}
+
 void setmotordesvioesq(int potencia){
   digitalWrite (MOTOR_DESVIO_ESQ, LOW);
   analogWrite (MOTOR_DESVIO_DIR, potencia);

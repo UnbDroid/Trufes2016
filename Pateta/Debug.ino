@@ -95,7 +95,7 @@ void debug_pid()
      update_sensors();
      update_pid();
      verifica_obstaculo ();
-     pseudobang();
+     //pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   
   digitalWrite(LED_ESQ, LOW);
@@ -104,31 +104,8 @@ void debug_pid()
   setmotordir(0);
   while(1);
 }
-/*
-void debug_desvio()
-{
-  int esq = SensorUSRaw(USESQ);
-  int dir = SensorUSRaw(USDIR);
-  setmotoresq(20);
-  setmotordir(20);
-  if((dir < 10 && dir != 0) || (esq < 10 && esq != 0))
-  {
-    if(dir < 10 && dir != 0) {
-      setmotordesvioesq(POT_DESVIO);
-      setmotoresq(0);
-      setmotordir(POT_COMPENSA);
-    } else if (esq < 10 && esq != 0) {
-      setmotordesviodir(POT_DESVIO);
-      setmotoresq(POT_COMPENSA);
-      setmotordir(0);
-    }
-  } else {
-    stopmotordesvio();
-    setmotoresq(0);
-    setmotordir(0);
-  }
-}
-*/
+
+
 
 /*
 void debug_verifica_faixa()
