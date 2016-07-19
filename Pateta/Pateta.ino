@@ -36,7 +36,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 
 /*CONSTANTES*/
 
-#define FREIO 0.8
+#define FREIO 0.7
 #define N2O 1.2
 #define POT_DESVIO 200
 #define POT_FAIXA 70
