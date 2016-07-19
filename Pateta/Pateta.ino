@@ -37,18 +37,18 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 /*CONSTANTES*/
 
 #define FREIO 0.7
-#define N2O 1.2
+#define N2O 1.22
 #define POT_DESVIO 200
 #define POT_FAIXA 70
 #define POT_COMPENSA 130
 
-#define MIN_FUNDO 70
-#define MAX_FUNDO 80
-#define MAX_FRENTE 60
-#define COMP_ARENA 180
+#define MIN_FUNDO 80
+#define MAX_FUNDO 83
+//#define MAX_FRENTE 60
+#define COMP_ARENA 170
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 70
+#define MIN_POT_PID 75
 #define MAX_POT_PID 150
 
 #define DIST_FAIXA_0 12

@@ -10,17 +10,17 @@ void debug_mantem_faixa()
   corrige_esq = 0;
   if(faixa)
   {
-    if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) <= DIST_FAIXA_1 || get_gyro() > 6)
+    if(SensorLDR(LDR_ESQ) || SensorUS(USESQ) <= DIST_FAIXA_1 || get_gyro() > 7)
     {
       corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= DIST_FAIXA_1 || get_gyro() < -6) {
+    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= DIST_FAIXA_1 || get_gyro() < -7) {
       corrige_esq = 1;
     }
   } else {
-    if(SensorUS(USESQ) <= DIST_FAIXA_0 || get_gyro() > 6)
+    if(SensorUS(USESQ) <= DIST_FAIXA_0 || get_gyro() > 7)
     {
       corrige_dir = 1;
-    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= 55 || get_gyro() < -6) {
+    } else if(SensorLDR(LDR_DIR) || SensorUS(USDIR) <= 55 || get_gyro() < -7) {
       corrige_esq = 1;
     }
   }
@@ -88,7 +88,7 @@ void debug_pid()
      update_sensors();
      update_pid();
      mantem_faixa ();
-     //verifica_obstaculo();
+     verifica_obstaculo();
      pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   

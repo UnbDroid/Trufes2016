@@ -4,9 +4,11 @@ boolean ultrassom = 0;
 
 void update_sensors()
 {
+  digitalWrite(LED_BUILTIN, HIGH);
   update_ldr();
   update_gyro();
   update_us();
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void iniciaLDR() // inicializa o LDR passando o pino de leitura dele
@@ -28,6 +30,8 @@ void iniciaUS() // inicializa o ultrassom passando o pino do echo
   pinMode(USTRAS, INPUT);
   pinMode(USESQ, INPUT);
   pinMode(USDIR, INPUT);
+  ustras = get_us(USTRAS);
+  usfrente = get_us(USFRENTE);
 }
 
 void update_ldr()

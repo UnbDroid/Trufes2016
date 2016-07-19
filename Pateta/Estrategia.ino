@@ -24,14 +24,17 @@ void gogogo()
 
 void esperaobstaculo()
 {
-  while(SensorUSRaw(USDIR) > 20)
+  unsigned long t_start_desvio = millis();
+  while(SensorUS(USDIR) > 20 && (millis() - t_start_desvio) < 2500)
   {
+    update_sensors ();
     update_pid();
     mantem_faixa();
     pseudobang();
   }
-  while(SensorUSRaw(USDIR) < 20)
+  while(SensorUS(USDIR) < 20 && (millis() - t_start_desvio) < 2500)
   {
+    update_sensors ();
     update_pid();
     mantem_faixa();
     pseudobang();
@@ -52,7 +55,7 @@ void desvio_esq () {
       setmotoresq(POW_LESS);
       setmotordesviodir (POT_DESVIO);
       update_gyro ();
-      while(get_gyro () < 80)
+      while(get_gyro () < 70)
       {
         update_gyro();
       }
@@ -77,7 +80,7 @@ void desvio_dir (){
       setmotordir(POW_LESS);
       setmotordesvioesq (POT_DESVIO);
       
-      while(get_gyro () > -80)
+      while(get_gyro () > -70)
       {
         update_gyro();
       }
@@ -115,9 +118,9 @@ void verifica_obstaculo()
     }
     */
     //debug_mantem_faixa (); //[[[DESCOMENTAR AQUI]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
-    //desviar();
+    desviar();
     
-    debug_desviar ();
+    //debug_desviar ();
 
   } else {
     desvio();
@@ -152,6 +155,7 @@ void desviar() {
     faixa = !faixa;
     desvio_incompleto = 1;             // "Avisa" que desvio foi necessario e está em progresso
   }
+  stopmotordesvio();
 }
 /*
 void desviando() {
@@ -284,10 +288,10 @@ void mantem_faixa()
       corrige_esq = 1;
     }
   } else {
-    if(SensorUS(USESQ) <= 5 || get_gyro() > 6)
+    if(SensorUS(USESQ) <= 6 || get_gyro() > 4)
     {
       corrige_dir = 1;
-    } else if(SensorUS(USESQ) >= 8 || SensorLDR(LDR_DIR)  || get_gyro() < -6) {
+    } else if(SensorUS(USESQ) >= 8 || SensorLDR(LDR_DIR)  || get_gyro() < -4) {
       corrige_esq = 1;
     }
   }
