@@ -28,34 +28,13 @@ void esperaobstaculo()
   {
     update_pid();
     mantem_faixa();
-    if(corrige_esq)
-    {
-      setmotoresq(potesq() + 10);
-      setmotordir(potdir());
-    } else if(corrige_dir) {
-      setmotoresq(potesq());
-      setmotordir(potdir() + 10);
-    } else {
-      setmotoresq(potesq());
-      setmotordir(potdir());
-    }
-    
+    pseudobang();
   }
   while(SensorUSRaw(USDIR) < 20)
   {
     update_pid();
     mantem_faixa();
-    if(corrige_esq)
-    {
-      setmotoresq(potesq() + 10);
-      setmotordir(potdir());
-    } else if(corrige_dir) {
-      setmotoresq(potesq());
-      setmotordir(potdir() + 10);
-    } else {
-      setmotoresq(potesq());
-      setmotordir(potdir());
-    }
+    pseudobang();
   }
 }
 
@@ -120,7 +99,8 @@ void verifica_obstaculo()
 {
   if(!desvio_incompleto)
   {
-    mantem_faixa (); 
+ 
+    /*
     update_pid();
     if(corrige_esq)
     {
@@ -133,6 +113,7 @@ void verifica_obstaculo()
       setmotoresq(potesq());
       setmotordir(potdir());
     }
+    */
     //debug_mantem_faixa (); //[[[DESCOMENTAR AQUI]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
     //desviar();
     
@@ -216,11 +197,11 @@ void solucaoporca () {
 */
 void desvio_sono_porco () {
   if (desvio_incompleto == 1 && faixa == 0){
-      desvio_esq ();
-    }
-    else if (desvio_incompleto == 1 && faixa == 1){
-      desvio_dir ();
-    }
+    desvio_esq ();
+  }
+  else if (desvio_incompleto == 1 && faixa == 1){
+    desvio_dir ();
+  }
 }
 
 void pseudobang()
@@ -229,7 +210,7 @@ void pseudobang()
   if(SensorUS (USTRAS) >= MAX_FUNDO)  // se tá muito pra frente
   {
     //-------------------------------------------Desvio-----------------------------------------------------
-    desvio_sono_porco (); 
+    //desvio_sono_porco (); 
     //----------------------------------------------Correção na faixa---------------------------------------------
     if(corrige_esq)
     {
@@ -248,7 +229,7 @@ void pseudobang()
   else if(SensorUS (USTRAS) <= MIN_FUNDO) // se tá muito pra trás
       {
       //-------------------------------------------Desvio----------------------------------------------------- 
-      desvio_sono_porco ();
+      //desvio_sono_porco ();
       //----------------------------------------------Correção na faixa----------------------------------------------
       if(corrige_esq)
       {
@@ -269,7 +250,7 @@ void pseudobang()
 //=============================================== se tá sussa ===================================================
      else {              // se tá sussa
       //-------------------------------------------Desvio------------------------------------------------
-     desvio_sono_porco ();   
+     //desvio_sono_porco ();   
      //----------------------------------------------Correção na faixa---------------------------------------------------
      if(corrige_esq)
       {
@@ -294,19 +275,19 @@ void mantem_faixa()
   corrige_esq = 0;
   if(faixa)
   {
-    if((SensorUS(USESQ) < 32 && SensorUS(USDIR) > 32) || SensorLDR(LDR_ESQ))
+    if((SensorUS(USESQ) < 32 && SensorUS(USDIR) > 32) || SensorLDR(LDR_ESQ)  || get_gyro() > 6)
     {
       corrige_dir = 1;
     } 
-    else if((SensorUS(USDIR) < 32 && SensorUS(USESQ) > 32) || SensorLDR(LDR_DIR)) 
+    else if((SensorUS(USDIR) < 32 && SensorUS(USESQ) > 32) || SensorLDR(LDR_DIR)  || get_gyro() < -6) 
     {
       corrige_esq = 1;
     }
   } else {
-    if(SensorUS(USESQ) <= 5)
+    if(SensorUS(USESQ) <= 5 || get_gyro() > 6)
     {
       corrige_dir = 1;
-    } else if(SensorUS(USESQ) >= 8 || SensorLDR(LDR_DIR) ) {
+    } else if(SensorUS(USESQ) >= 8 || SensorLDR(LDR_DIR)  || get_gyro() < -6) {
       corrige_esq = 1;
     }
   }

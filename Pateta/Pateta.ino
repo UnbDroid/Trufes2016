@@ -76,12 +76,10 @@ void setup()
 void loop()
 {
     //debug_verifica_faixa ();
-    //debug_pid ();
+    debug_pid ();
     //debug_verifica_obstaculo ();
 
-    
-    update_sensors ();
-    verifica_obstaculo();
+    //verifica_obstaculo();
     //debug_desvio();
     //debug_sensores();
 }

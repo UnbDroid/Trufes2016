@@ -82,20 +82,14 @@ void debug_condicao()
 
 void debug_pid()
 {
-  unsigned long t_start = millis();
-  setmotoresq(150);
-  setmotordir(150);
-  
-  while(millis() - t_start < 100)
-  {
-    update_gyro();
-  }
+  //unsigned long t_start = millis();
   
   do{
      update_sensors();
      update_pid();
-     verifica_obstaculo ();
-     //pseudobang();
+     mantem_faixa ();
+     //verifica_obstaculo();
+     pseudobang();
   } while (1); //while(millis() - t_start < 2000);
   
   digitalWrite(LED_ESQ, LOW);
