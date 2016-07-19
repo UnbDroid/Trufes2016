@@ -210,15 +210,16 @@ void desvio_sono_porco () {
 
 void pseudobang()
 {
-  // ==============================================se tá muito pra frente======================================
+  /*/ ==============================================se tá muito pra frente======================================
   if(SensorUS (USTRAS) >= MAX_FUNDO)  // se tá muito pra frente
   {
       setmotoresq(FREIO_DE_MAO);
       setmotordir(FREIO_DE_MAO);
   }
 
+*/
 //======================================== se tá muito pra trás================================================ 
-  else if(SensorUS (USTRAS) <= MIN_FUNDO) // se tá muito pra trás
+  if(SensorUS (USTRAS) <= MIN_FUNDO) // se tá muito pra trás
       {
       //----------------------------------------------Correção na faixa----------------------------------------------
       if(corrige_esq)
@@ -232,6 +233,7 @@ void pseudobang()
       } 
       //----------------------------------------------NITRO------------------------------------------------------
       else {
+        /*
         unsigned long t_start = millis();
         while((millis() - t_start) < 50)
         {
@@ -240,13 +242,16 @@ void pseudobang()
           setmotoresq(potesq() * TURBO);
           setmotordir(potdir() * TURBO);
         }
+        */
         setmotoresq(potesq());
         setmotordir(potdir());
       }
     } 
-
+  else{
+    setmotoresq(FREIO_DE_MAO);
+      setmotordir(FREIO_DE_MAO);}
 //=============================================== se tá sussa ===================================================
-     else {              // se tá sussa
+     /*else {              // se tá sussa
       //-------------------------------------------Desvio------------------------------------------------
      //desvio_sono_porco ();   
      //----------------------------------------------Correção na faixa---------------------------------------------------
@@ -265,6 +270,7 @@ void pseudobang()
         setmotordir(potdir());
       }
     }
+    */
 }
 /*
 void pseudobangantigo()

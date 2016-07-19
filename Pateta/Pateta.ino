@@ -50,7 +50,7 @@ boolean desvio_incompleto = 0; // Variável usada para saber se o robô está em
 #define COMP_ARENA 170
 #define COMP_ROBO 15
 
-#define MIN_POT_PID 90
+#define MIN_POT_PID 100
 #define MAX_POT_PID 150
 
 #define DIST_FAIXA_0 12
