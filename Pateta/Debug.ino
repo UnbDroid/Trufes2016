@@ -84,14 +84,18 @@ void debug_pid()
 {
   //unsigned long t_start = millis();
   
+     update_sensors();
+     update_sensors();
+     update_sensors();
+     update_sensors();
+     
+  
   do{
      update_sensors();
      update_pid();
      mantem_faixa ();
      verifica_obstaculo();
-     pseudobang();
-  } while (1); //while(millis() - t_start < 2000);
-  
+  } while(1);
   digitalWrite(LED_ESQ, LOW);
   digitalWrite(LED_DIR, LOW);
   setmotoresq(0);
